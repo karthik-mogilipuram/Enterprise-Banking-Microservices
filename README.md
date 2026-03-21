@@ -1,4 +1,9 @@
 # 🏦 Enterprise Banking Microservices Platform
+![Java](https://img.shields.io/badge/Java-21-orange)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.5-brightgreen)
+![Docker](https://img.shields.io/badge/Docker-Compose-blue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)
+![Redis](https://img.shields.io/badge/Redis-7-red)
 
 A production-grade, cloud-ready enterprise banking backend built with **Spring Boot 3.3.5**, **Java 21**, and **Microservices Architecture**. The platform handles user authentication, account management, transactions, payments, and real-time email notifications — all running in Docker containers and communicating through an API Gateway.
 
