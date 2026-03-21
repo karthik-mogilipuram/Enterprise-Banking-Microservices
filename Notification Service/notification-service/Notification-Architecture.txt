@@ -1,0 +1,30 @@
+notification-service/
+├── pom.xml
+├── Dockerfile
+└── src/
+    ├── main/
+    │   ├── java/com/enterprise/banking/notification/
+    │   │   ├── NotificationServiceApplication.java
+    │   │   ├── controller/
+    │   │   │   └── NotificationController.java
+    │   │   ├── service/
+    │   │   │   ├── NotificationService.java
+    │   │   │   └── EmailService.java
+    │   │   ├── model/
+    │   │   │   ├── Notification.java
+    │   │   │   ├── NotificationType.java
+    │   │   │   ├── NotificationStatus.java
+    │   │   │   └── dto/
+    │   │   │       └── NotificationEvent.java
+    │   │   ├── repository/
+    │   │   │   └── NotificationRepository.java
+    │   │   └── exception/
+    │   │       └── GlobalExceptionHandler.java
+    │   └── resources/
+    │       ├── application.yml
+    │       ├── application-dev.yml
+    │       └── db/migration/
+    │           └── V1__create_notifications_table.sql
+    └── test/java/com/enterprise/banking/notification/
+        └── service/
+            └── NotificationServiceTest.java

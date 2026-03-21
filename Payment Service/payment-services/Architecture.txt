@@ -1,0 +1,391 @@
+payment-service/
+├── pom.xml
+├── Dockerfile
+└── src/
+    ├── main/
+    │   ├── java/com/enterprise/banking/payment/
+    │   │   ├── PaymentServiceApplication.java
+    │   │   ├── AppConfig.java
+    │   │   ├── controller/
+    │   │   │   └── PaymentController.java
+    │   │   ├── service/
+    │   │   │   ├── PaymentService.java
+    │   │   │   ├── ScheduledPaymentService.java
+    │   │   │   ├── notification/
+    │   │   │   │   ├── NotificationService.java
+    │   │   │   │   └── EmailService.java
+    │   │   │   └── saga/
+    │   │   │       ├── TransferSagaOrchestrator.java
+    │   │   │       └── SagaStatus.java
+    │   │   ├── model/
+    │   │   │   ├── Payment.java
+    │   │   │   ├── PaymentStatus.java
+    │   │   │   ├── PaymentType.java
+    │   │   │   ├── Notification.java
+    │   │   │   └── dto/
+    │   │   │       ├── TransferRequest.java
+    │   │   │       ├── SchedulePaymentRequest.java
+    │   │   │       └── PaymentResponse.java
+    │   │   ├── repository/
+    │   │   │   ├── PaymentRepository.java
+    │   │   │   └── NotificationRepository.java
+    │   │   ├── client/
+    │   │   │   ├── AccountServiceClient.java
+    │   │   │   └── TransactionServiceClient.java
+    │   │   └── exception/
+    │   │       ├── GlobalExceptionHandler.java
+    │   │       └── PaymentFailedException.java
+    │   └── resources/
+    │       ├── application.yml
+    │       ├── application-dev.yml
+    │       └── db/migration/
+    │           ├── V1__create_payments_table.sql
+    │           └── V2__create_notifications_table.sql
+    └── test/
+
+    Complete Architecture:
+    
+
+enterprise-banking-platform/
+├── docker-compose.yml                    # Local development orchestration
+├── docker-compose.infra.yml              # Infrastructure services only
+├── k8s/                                  # Kubernetes manifests
+│   ├── namespaces/
+│   │   └── banking-namespace.yaml
+│   ├── api-gateway/
+│   │   ├── deployment.yaml
+│   │   ├── service.yaml
+│   │   └── hpa.yaml                      # Horizontal Pod Autoscaler
+│   ├── auth-service/
+│   │   ├── deployment.yaml
+│   │   ├── service.yaml
+│   │   └── hpa.yaml
+│   ├── account-service/
+│   │   ├── deployment.yaml
+│   │   ├── service.yaml
+│   │   └── hpa.yaml
+│   ├── transaction-service/
+│   │   ├── deployment.yaml
+│   │   ├── service.yaml
+│   │   └── hpa.yaml
+│   ├── payment-service/
+│   │   ├── deployment.yaml
+│   │   ├── service.yaml
+│   │   └── hpa.yaml
+│   ├── notification-service/
+│   │   ├── deployment.yaml
+│   │   └── service.yaml
+│   ├── discovery-server/
+│   │   ├── deployment.yaml
+│   │   └── service.yaml
+│   ├── config-server/
+│   │   ├── deployment.yaml
+│   │   └── service.yaml
+│   ├── infrastructure/
+│   │   ├── kafka/
+│   │   │   ├── zookeeper.yaml
+│   │   │   └── kafka.yaml
+│   │   ├── postgres/
+│   │   │   └── statefulset.yaml
+│   │   ├── redis/
+│   │   │   └── deployment.yaml
+│   │   └── monitoring/
+│   │       ├── prometheus-config.yaml
+│   │       ├── prometheus.yaml
+│   │       └── grafana.yaml
+│   └── ingress.yaml
+│
+├── .github/
+│   └── workflows/
+│       ├── ci.yml                        # Build + Test on PR
+│       ├── cd.yml                        # Deploy on merge to main
+│       └── service-ci.yml                # Reusable per-service workflow
+│
+├── discovery-server/
+│   ├── Dockerfile
+│   ├── pom.xml
+│   └── src/main/
+│       ├── java/com/banking/discovery/
+│       │   └── DiscoveryServerApplication.java
+│       └── resources/
+│           └── application.yml
+│
+├── config-server/
+│   ├── Dockerfile
+│   ├── pom.xml
+│   ├── src/main/
+│   │   ├── java/com/banking/config/
+│   │   │   └── ConfigServerApplication.java
+│   │   └── resources/
+│   │       └── application.yml
+│   └── configurations/                   # Centralized configs
+│       ├── application.yml               # Shared defaults
+│       ├── auth-service.yml
+│       ├── account-service.yml
+│       ├── transaction-service.yml
+│       ├── payment-service.yml
+│       └── notification-service.yml
+│
+├── api-gateway/
+│   ├── Dockerfile
+│   ├── pom.xml
+│   └── src/main/
+│       ├── java/com/banking/gateway/
+│       │   ├── ApiGatewayApplication.java
+│       │   ├── config/
+│       │   │   ├── GatewayConfig.java
+│       │   │   ├── RateLimitConfig.java
+│       │   │   └── CorsConfig.java
+│       │   └── filter/
+│       │       ├── AuthenticationFilter.java
+│       │       └── LoggingFilter.java
+│       └── resources/
+│           └── application.yml
+│
+├── auth-service/
+│   ├── Dockerfile
+│   ├── pom.xml
+│   └── src/
+│       ├── main/java/com/banking/auth/
+│       │   ├── AuthServiceApplication.java
+│       │   ├── controller/
+│       │   │   └── AuthController.java
+│       │   ├── service/
+│       │   │   ├── AuthService.java
+│       │   │   └── JwtService.java
+│       │   ├── model/
+│       │   │   ├── User.java
+│       │   │   ├── Role.java
+│       │   │   └── dto/
+│       │   │       ├── LoginRequest.java
+│       │   │       ├── RegisterRequest.java
+│       │   │       └── AuthResponse.java
+│       │   ├── repository/
+│       │   │   └── UserRepository.java
+│       │   ├── security/
+│       │   │   ├── SecurityConfig.java
+│       │   │   └── JwtAuthFilter.java
+│       │   └── exception/
+│       │       ├── GlobalExceptionHandler.java
+│       │       └── UserAlreadyExistsException.java
+│       ├── main/resources/
+│       │   ├── application.yml
+│       │   └── db/migration/              # Flyway migrations
+│       │       └── V1__create_users_table.sql
+│       └── test/java/com/banking/auth/
+│           ├── controller/
+│           │   └── AuthControllerTest.java
+│           └── service/
+│               └── AuthServiceTest.java
+│
+├── account-service/
+│   ├── Dockerfile
+│   ├── pom.xml
+│   └── src/
+│       ├── main/java/com/banking/account/
+│       │   ├── AccountServiceApplication.java
+│       │   ├── controller/
+│       │   │   └── AccountController.java
+│       │   ├── service/
+│       │   │   ├── AccountService.java
+│       │   │   └── BalanceCacheService.java
+│       │   ├── model/
+│       │   │   ├── Account.java
+│       │   │   ├── AccountType.java
+│       │   │   ├── AccountStatus.java
+│       │   │   └── dto/
+│       │   │       ├── CreateAccountRequest.java
+│       │   │       ├── AccountResponse.java
+│       │   │       └── BalanceResponse.java
+│       │   ├── repository/
+│       │   │   └── AccountRepository.java
+│       │   ├── client/
+│       │   │   └── AuthServiceClient.java  # Feign client
+│       │   └── exception/
+│       │       ├── GlobalExceptionHandler.java
+│       │       ├── AccountNotFoundException.java
+│       │       └── InsufficientBalanceException.java
+│       ├── main/resources/
+│       │   ├── application.yml
+│       │   └── db/migration/
+│       │       └── V1__create_accounts_table.sql
+│       └── test/java/com/banking/account/
+│           ├── controller/
+│           │   └── AccountControllerTest.java
+│           └── service/
+│               └── AccountServiceTest.java
+│
+├── transaction-service/
+│   ├── Dockerfile
+│   ├── pom.xml
+│   └── src/
+│       ├── main/java/com/banking/transaction/
+│       │   ├── TransactionServiceApplication.java
+│       │   ├── controller/
+│       │   │   └── TransactionController.java
+│       │   ├── service/
+│       │   │   ├── TransactionService.java
+│       │   │   └── TransactionValidationService.java
+│       │   ├── model/
+│       │   │   ├── Transaction.java
+│       │   │   ├── TransactionType.java
+│       │   │   ├── TransactionStatus.java
+│       │   │   └── dto/
+│       │   │       ├── DepositRequest.java
+│       │   │       ├── WithdrawRequest.java
+│       │   │       └── TransactionResponse.java
+│       │   ├── repository/
+│       │   │   └── TransactionRepository.java
+│       │   ├── client/
+│       │   │   └── AccountServiceClient.java
+│       │   ├── kafka/
+│       │   │   ├── TransactionProducer.java
+│       │   │   └── TransactionConsumer.java
+│       │   └── exception/
+│       │       ├── GlobalExceptionHandler.java
+│       │       ├── DailyLimitExceededException.java
+│       │       └── InvalidTransactionException.java
+│       ├── main/resources/
+│       │   ├── application.yml
+│       │   └── db/migration/
+│       │       └── V1__create_transactions_table.sql
+│       └── test/java/com/banking/transaction/
+│           ├── controller/
+│           │   └── TransactionControllerTest.java
+│           └── service/
+│               └── TransactionServiceTest.java
+│
+├── payment-service/
+│   ├── Dockerfile
+│   ├── pom.xml
+│   └── src/
+│       ├── main/java/com/banking/payment/
+│       │   ├── PaymentServiceApplication.java
+│       │   ├── controller/
+│       │   │   └── PaymentController.java
+│       │   ├── service/
+│       │   │   ├── PaymentService.java
+│       │   │   ├── ScheduledPaymentService.java
+│       │   │   └── saga/
+│       │   │       ├── TransferSagaOrchestrator.java
+│       │   │       ├── SagaStep.java
+│       │   │       └── SagaStatus.java
+│       │   ├── model/
+│       │   │   ├── Payment.java
+│       │   │   ├── PaymentStatus.java
+│       │   │   ├── PaymentType.java
+│       │   │   └── dto/
+│       │   │       ├── TransferRequest.java
+│       │   │       ├── SchedulePaymentRequest.java
+│       │   │       └── PaymentResponse.java
+│       │   ├── repository/
+│       │   │   └── PaymentRepository.java
+│       │   ├── client/
+│       │   │   ├── AccountServiceClient.java
+│       │   │   └── TransactionServiceClient.java
+│       │   ├── kafka/
+│       │   │   ├── PaymentProducer.java
+│       │   │   └── PaymentConsumer.java
+│       │   └── exception/
+│       │       ├── GlobalExceptionHandler.java
+│       │       └── PaymentFailedException.java
+│       ├── main/resources/
+│       │   ├── application.yml
+│       │   └── db/migration/
+│       │       └── V1__create_payments_table.sql
+│       └── test/java/com/banking/payment/
+│           ├── controller/
+│           │   └── PaymentControllerTest.java
+│           └── service/
+│               ├── PaymentServiceTest.java
+│               └── saga/
+│                   └── TransferSagaOrchestratorTest.java
+│
+├── notification-service/
+│   ├── Dockerfile
+│   ├── pom.xml
+│   └── src/
+│       ├── main/java/com/banking/notification/
+│       │   ├── NotificationServiceApplication.java
+│       │   ├── service/
+│       │   │   ├── NotificationService.java
+│       │   │   ├── EmailService.java
+│       │   │   └── SmsService.java
+│       │   ├── model/
+│       │   │   ├── Notification.java
+│       │   │   ├── NotificationType.java
+│       │   │   └── dto/
+│       │   │       └── NotificationEvent.java
+│       │   ├── repository/
+│       │   │   └── NotificationRepository.java
+│       │   ├── kafka/
+│       │   │   └── NotificationConsumer.java
+│       │   └── template/
+│       │       ├── deposit-confirmation.html
+│       │       ├── withdrawal-alert.html
+│       │       └── transfer-receipt.html
+│       ├── main/resources/
+│       │   └── application.yml
+│       └── test/java/com/banking/notification/
+│           └── service/
+│               └── NotificationServiceTest.java
+│
+└── README.md
+
+
+
+
+
+
+
+┌──────────────────┐
+                          │   Client Apps     │
+                          │  (Web / Mobile)   │
+                          └────────┬──────────┘
+                                   │
+                          ┌────────▼──────────┐
+                          │   API Gateway      │
+                          │ (Spring Cloud GW)  │
+                          │ Rate Limiting      │
+                          │ JWT Validation     │
+                          │ Request Routing    │
+                          └────────┬──────────┘
+                                   │
+                    ┌──────────────┼──────────────┐
+                    │              │              │
+           ┌────────▼───┐  ┌──────▼──────┐  ┌───▼─────────┐
+           │ Auth        │  │ Account     │  │ Transaction │
+           │ Service     │  │ Service     │  │ Service     │
+           │             │  │             │  │             │
+           │ • Register  │  │ • Create    │  │ • Deposit   │
+           │ • Login     │  │ • Balance   │  │ • Withdraw  │
+           │ • JWT       │  │ • KYC       │  │ • History   │
+           │ • Roles     │  │ • Close     │  │ • Validate  │
+           └──────┬──────┘  └──────┬──────┘  └──────┬──────┘
+                  │                │                 │
+                  │         ┌──────▼──────┐         │
+                  │         │ Payment     │         │
+                  │         │ Service     │◄────────┘
+                  │         │             │
+                  │         │ • Transfer  │
+                  │         │ • Schedule  │
+                  │         │ • External  │
+                  │         └──────┬──────┘
+                  │                │
+                  │         ┌──────▼──────┐
+                  │         │Notification │
+                  │         │ Service     │
+                  │         │             │
+                  │         │ • Email     │
+                  │         │ • SMS       │
+                  │         │ • Push      │
+                  │         └─────────────┘
+                  │
+         ┌────────▼────────────────────────────────┐
+         │           Infrastructure Layer           │
+         │                                          │
+         │  Eureka (Discovery)  │  Config Server    │
+         │  Kafka (Messaging)   │  Redis (Cache)    │
+         │  PostgreSQL (per service DB)             │
+         │  Prometheus + Grafana (Monitoring)       │
+         └──────────────────────────────────────────┘

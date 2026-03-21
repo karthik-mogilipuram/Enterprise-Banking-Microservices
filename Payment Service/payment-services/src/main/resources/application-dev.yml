@@ -1,0 +1,15 @@
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payment_db
+    username: postgres
+    password: Karthik@007
+
+logging:
+  level:
+    com.enterprise.banking.payment: DEBUG
+    org.hibernate.SQL: DEBUG

@@ -1,0 +1,38 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: http://banking-auth:8081
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=0
+
+        - id: account-service
+          uri: http://banking-account:8082
+          predicates:
+            - Path=/api/accounts/**
+          filters:
+            - StripPrefix=0
+
+        - id: transaction-service
+          uri: http://banking-transaction:8083
+          predicates:
+            - Path=/api/transactions/**
+          filters:
+            - StripPrefix=0
+
+        - id: payment-service
+          uri: http://banking-payment:8084
+          predicates:
+            - Path=/api/payments/**
+          filters:
+            - StripPrefix=0
+
+        - id: notification-service
+          uri: http://banking-notification:8085
+          predicates:
+            - Path=/api/notifications/**
+          filters:
+            - StripPrefix=0
