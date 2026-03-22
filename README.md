@@ -126,8 +126,7 @@ Single entry point for all client requests.
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/moglipuram-karthik/Enterprise-Banking-Microservices.git
-cd Enterprise-Banking-Microservices
+git clone https://github.com/karthik-mogilipuram/Enterprise-Banking-Microservices.git
 ```
 
 ### 2. Configure Environment Variables
